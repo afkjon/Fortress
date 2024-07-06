@@ -1,0 +1,21 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"rust-analyzer.linkedProjects": [
+			"rust-project.json"
+		],
+		"rust-analyzer.check.extraEnv": {
+			"RUSTUP_TOOLCHAIN": "nightly-2024-03-27"
+		},
+		"rust-analyzer.server.extraEnv": {
+			"RUSTUP_TOOLCHAIN": "nightly-2024-03-27"
+		},
+		"rust-analyzer.cargo.extraEnv": {
+			"RUSTUP_TOOLCHAIN": "nightly-2024-03-27"
+		},
+	}
+}

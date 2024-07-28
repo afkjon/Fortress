@@ -15,6 +15,7 @@ RUN apt install -y git
 RUN apt install -y gh
 RUN apt install -y vim
 RUN apt install -y sudo
+RUN apt install -y telnet
 
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 RUN unzip awscliv2.zip
@@ -113,5 +114,6 @@ RUN wget -O go.tar.gz https://golang.org/dl/go${GO_VERSION}.linux-amd64.tar.gz \
 ENV PATH="/usr/local/go/bin:${PATH}"
 ENV GOPATH /go
 ENV GOBIN /go/bin
+RUN go install github.com/fullstorydev/grpcurl/cmd/grpcurl@latest
 
 USER $USERNAME

@@ -36,7 +36,6 @@
         "HCP_ORG_ID": "Fortress"
     },
     "updateContentCommand": "./.devcontainer/update_content.sh",
-    "postStartCommand": "./.devcontainer/post_start.sh",
-    "remoteUser": "ephemeral",
+    "remoteUser": "guardian",
     "runArgs": ["--device=/dev/net/tun"]
 }

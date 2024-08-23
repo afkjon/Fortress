@@ -85,7 +85,7 @@ RUN apt update && apt install hcp -y
 # ==========================
 # Setup a non-root execution user...
 # ==========================
-ARG USERNAME=ephemeral
+ARG USERNAME=guardian
 ARG USER_UID=2000
 ARG USER_GID=$USER_UID
 
@@ -106,7 +106,7 @@ RUN rustup component add clippy
 RUN rustup target install x86_64-unknown-linux-musl
 
 # Install Go
-ENV GO_VERSION 1.22.5
+ENV GO_VERSION 1.23.0
 RUN wget -O go.tar.gz https://golang.org/dl/go${GO_VERSION}.linux-amd64.tar.gz \
     && tar -C /usr/local -xzf go.tar.gz \
     && rm go.tar.gz

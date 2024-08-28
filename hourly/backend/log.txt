@@ -1,2 +1,7 @@
 15:10:53 | 200 |     60.104µs |       127.0.0.1 | GET     | /               
 15:10:53 | 404 |      31.53µs |       127.0.0.1 | GET     | /favicon.ico     | Cannot GET /favicon.ico
+09:10:55 | 200 |     54.453µs |       127.0.0.1 | GET     | /               
+09:10:55 | 404 |     19.297µs |       127.0.0.1 | GET     | /favicon.ico     | Cannot GET /favicon.ico
+09:10:57 | 404 |     13.145µs |       127.0.0.1 | GET     | /tasks           | Cannot GET /tasks
+09:10:57 | 404 |     11.742µs |       127.0.0.1 | GET     | /favicon.ico     | Cannot GET /favicon.ico
+09:11:16 | 404 |     49.975µs |       127.0.0.1 | GET     | /data/tasks      | Cannot GET /data/tasks

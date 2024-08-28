@@ -5,10 +5,13 @@ import (
 	"log"
 	"os"
 
-	"github.com/afkjon/Fortress/hourly/db"
-	"github.com/gofiber/fiber/v3"
-	"github.com/gofiber/fiber/v3/middleware/logger"
+	"github.com/afkjon/Fortress/hourly/backend/db"
+	"github.com/afkjon/Fortress/hourly/backend/handlers"
+	"github.com/gorilla/sessions"
 	"github.com/joho/godotenv"
+	"github.com/labstack/echo-contrib/session"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/markbates/goth"
 
 	"github.com/markbates/goth/providers/google"
@@ -31,11 +34,33 @@ func main() {
 		return
 	}
 
-	app := fiber.New()
-	app.Use(logger.New(logger.Config{
-		// For more options, see the Config section
-		Format: "${pid} ${locals:requestid} ${status} - ${method} ${path}​\n",
+	e := echo.New()
+	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Skipper: middleware.DefaultSkipper,
+		Format: `{` +
+			`"time":"${time_rfc3339_nano}",` +
+			`"id":"${id}",` +
+			`"remote_ip":"${remote_ip}",` +
+			`"host":"${host}",` +
+			`"method":"${method}",` +
+			`"uri":"${uri}",` +
+			`"user_agent":"${user_agent}",` +
+			`"status":${status},` +
+			`"error":"${error}",` +
+			`"latency":${latency},` +
+			`"latency_human":"${latency_human}"` +
+			`,"bytes_in":${bytes_in},` +
+			`"bytes_out":${bytes_out}}` + "\n",
+		CustomTimeFormat: "2006-01-02 15:04:05.00000",
 	}))
+	e.Use(middleware.CORS())
+	/*
+		e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+			AllowOrigins: []string{os.Getenv("CLIENT_URI")},
+			AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+		}))
+	*/
+	e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
 
 	// Setup Logger
 	logFile, err := os.OpenFile(os.Getenv("LOG_PATH"), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
@@ -44,13 +69,7 @@ func main() {
 	}
 	defer logFile.Close()
 
-	app.Use(logger.New(logger.Config{
-		Output: logFile,
-	}))
+	handlers.SetupRoutes(e)
 
-	app.Get("/", func(c fiber.Ctx) error {
-		return c.Status(200).JSON(fiber.Map{"msg": "hello world"})
-	})
-
-	log.Fatal(app.Listen(os.Getenv("PORT")))
+	e.Logger.Fatal(e.Start(os.Getenv("PORT")))
 }

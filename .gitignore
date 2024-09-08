@@ -66,6 +66,9 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Executables Binaries
+hourly/tmp/main
+
 node_modules
 dist
 dist-ssr
@@ -81,3 +84,4 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+

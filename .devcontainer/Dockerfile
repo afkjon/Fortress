@@ -115,6 +115,6 @@ ENV PATH="/usr/local/go/bin:${PATH}"
 ENV GOPATH /go
 ENV GOBIN /go/bin
 RUN go install github.com/fullstorydev/grpcurl/cmd/grpcurl@latest
-RUN go install github.com/cosmtrek/air@latest
+RUN go install github.com/air-verse/air@latest
 
 USER $USERNAME

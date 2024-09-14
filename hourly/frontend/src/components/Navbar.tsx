@@ -57,8 +57,6 @@ const Navbar: React.FC = () => {
   const { user, logout } = useAuth()
   const { isOpen, onToggle } = useDisclosure()
 
-  console.log(user)
-
   return (
     <Box>
       <Flex

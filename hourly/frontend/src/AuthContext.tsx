@@ -5,8 +5,8 @@ import api from './helpers/api'; // Axios instance
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 interface User {
-  id: number;
-  email?: string;
+  ID: number;
+  email: string;
 }
 
 interface AuthProviderProps {
@@ -33,12 +33,15 @@ export const AuthProvider =  (props : AuthProviderProps ) => {
 
   const checkUser = async () => {
     try {
-      const res = await api.get('/auth/user', {
+      const res = await api.get<User>('/auth/user', {
         withCredentials: true
       })
       
-      if (res.status === 200)
-        setUser(res.data.user);
+      // todo: fix this
+      if (res.status === 200) {
+        const u : User = res.data
+        setUser(u);
+      }
     } catch (error) {
       setUser(null);
       console.error("Error fetching user: ", error);
@@ -65,7 +68,7 @@ export const AuthProvider =  (props : AuthProviderProps ) => {
         { withCredentials: true }
       )
       if (res.status === 200) {
-        setUser({ id: res.data.user.id, email: res.data.user.email });
+        setUser({ ID: res.data.user.id, email: res.data.user.email });
       }
     } catch (error) {
       console.error("Registration failed", error);
@@ -80,7 +83,7 @@ export const AuthProvider =  (props : AuthProviderProps ) => {
 
   useEffect(() => {
     checkUser();
-  })
+  }, [])
 
   return (
     <AuthContext.Provider value={{ user, login, register, logout }}>

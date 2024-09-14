@@ -13,6 +13,8 @@ import (
 	"gorm.io/gorm"
 )
 
+var jwtSecret = []byte(os.Getenv("JWT_SECRET"))
+
 type jwtCustomClaims struct {
 	Email string `json:"email"`
 	Admin bool   `json:"admin"`

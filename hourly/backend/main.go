@@ -7,6 +7,7 @@ import (
 
 	"github.com/afkjon/Fortress/hourly/backend/db"
 	"github.com/afkjon/Fortress/hourly/backend/handlers"
+
 	"github.com/joho/godotenv"
 
 	"github.com/labstack/echo/v4"
@@ -62,6 +63,17 @@ func main() {
 
 	// Setup Routes
 	handlers.SetupRoutes(e)
+
+	// Protected routes
+	authGroup := e.Group("/auth")
+	authGroup.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins:     []string{os.Getenv("CLIENT_URI")},
+		AllowMethods:     []string{echo.GET, echo.POST, echo.PUT, echo.DELETE},
+		AllowCredentials: true,
+		AllowHeaders:     []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization},
+	}))
+	authGroup.Use(handlers.AuthMiddleware)
+	authGroup.GET("/user", handlers.UserStatus)
 
 	// Setup Logger
 	logFile, err := os.OpenFile(os.Getenv("LOG_PATH"), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)

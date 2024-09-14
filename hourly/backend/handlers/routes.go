@@ -23,31 +23,4 @@ func SetupRoutes(e *echo.Echo) {
 
 	e.POST("/login", Login)
 	e.POST("/register", Register)
-
-	e.GET("/auth/claims", HandleClaims)
-
-	/*
-		e.GET("/", func(c echo.Context) error {
-			startStr := c.QueryParam("start")
-			start, err := strconv.Atoi(startStr)
-			if err != nil {
-				start = 1
-			}
-
-			var tasks []models.Task
-			db.DB.Find(&tasks)
-			template := "tasks"
-
-			if start == 1 {
-				template = "tasks-index"
-			}
-
-			return c.Render(http.StatusOK, template, TaskList{
-				Start: 1,
-				Next:  start + 1,
-				More:  true,
-				Tasks: tasks,
-			})
-		})
-	*/
 }

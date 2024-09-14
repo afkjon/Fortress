@@ -30,12 +30,11 @@ const API_URI : string = "http://localhost:8080"
 const handleExportCsv = async(e : React.MouseEvent<HTMLButtonElement>) => {
   e.preventDefault()
     try {
-    const res = await fetch( API_URI + "/data/tasks/csv")
-    const data = await res.json()
-    if (!res.ok) {
-      throw new Error(data.error || "Something went wrong")
+    const res = await api.get( API_URI + "/data/tasks/csv")
+    if (res.status !== 200) {
+      throw new Error(res.data.error || "Something went wrong")
     } 
-    return data
+    return res.data
   } catch (error) {
     console.error(error)
   }

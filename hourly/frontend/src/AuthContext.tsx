@@ -1,12 +1,12 @@
 // src/AuthContext.js
 import { createContext, useState, useContext, type ReactNode, useEffect } from 'react';
 import api from './helpers/api'; // Axios instance
-import axios from 'axios';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 interface User {
-  email: string;
+  id: number;
+  email?: string;
 }
 
 interface AuthProviderProps {
@@ -30,51 +30,29 @@ class AuthenticationError extends Error {
 
 export const AuthProvider =  (props : AuthProviderProps ) => {
   const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null);
 
-  const getTokenFromCookie = () => {
-    const name = 'token=';
-    const decodedCookie = decodeURIComponent(document.cookie);
-    const ca = decodedCookie.split(';');
-    for (let i = 0; i < ca.length; i++) {
-      let c = ca[i];
-      while (c.charAt(0) === ' ') {
-        c = c.substring(1);
-      }
-      if (c.indexOf(name) === 0) {
-        return c.substring(name.length, c.length);
-      }
-    }
-    return '';
-  };
-
-  const isLoggedIn = () => {
-    if (!document.cookie) {
-      return
-    }
-    
-    setToken(getTokenFromCookie());
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
-    /*
+  const checkUser = async () => {
     try {
-      const response = api.get('/auth/claims');
-      setUser({ email: response.data.email });
+      const res = await api.get('/auth/user', {
+        withCredentials: true
+      })
+      
+      if (res.status === 200)
+        setUser(res.data.user);
     } catch (error) {
-      console.error("Verification failed", error);
-      throw error;
+      setUser(null);
+      console.error("Error fetching user: ", error);
     }
-    */
   }    
 
   const login = async (email: string, password: string) => {
     try {
-      await api.post('/login', { email, password })
-        .then(response => {
-          setToken(response.data.token);
-      });
-
-      setUser({ email }); 
+      const res = await api.post('/login', { email, password }, {
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true
+        }
+      )
+      setUser(res.data.user);
     } catch (error) {
       console.error("Login failed", error);
       throw new AuthenticationError({ data: { message: 'Invalid username or password' } });
@@ -83,8 +61,12 @@ export const AuthProvider =  (props : AuthProviderProps ) => {
 
   const register = async (email: string, password: string) => {
     try {
-      await api.post('/register', { email, password });
-      setUser({ email });
+      const res = await api.post('/register', { email, password },
+        { withCredentials: true }
+      )
+      if (res.status === 200) {
+        setUser({ id: res.data.user.id, email: res.data.user.email });
+      }
     } catch (error) {
       console.error("Registration failed", error);
       throw error;
@@ -97,10 +79,8 @@ export const AuthProvider =  (props : AuthProviderProps ) => {
   };
 
   useEffect(() => {
-    if (!token) {
-      isLoggedIn();
-    }
-  }, [token])
+    checkUser();
+  })
 
   return (
     <AuthContext.Provider value={{ user, login, register, logout }}>

@@ -19,7 +19,10 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-        login(email, password);
+        await login(email, password);
+        if (user) {
+            navigate('/');
+        }
     } catch (error) {
         setError('Invalid username or password');
         console.error('Login failed', error);

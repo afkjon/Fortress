@@ -5,10 +5,10 @@ import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 
 import { Outlet } from 'react-router-dom'
-
 import { Container } from '@chakra-ui/react'
 
 const App: React.FC = () => {
+
   return (
     <div>
       <Navbar />

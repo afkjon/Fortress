@@ -6,7 +6,11 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import App from './App.tsx'
 import Home from './pages/Home.tsx'
 import About from './pages/About.tsx'
+import Login from './pages/Login.tsx'
+import Register from './pages/Register.tsx'
+import { AuthProvider } from './AuthContext'
 import './index.css'
+
 
 // Create a Tanstack query client
 const queryClient = new QueryClient()
@@ -21,14 +25,18 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
   <ChakraProvider theme={extendTheme({themeConfig})}>
     <QueryClientProvider client={queryClient}>
+      <AuthProvider>
       <BrowserRouter>
         <Routes>
           <Route path= "/" element={<App />}>
             <Route index element={<Home />} />
             <Route path="about" element={<About />} />
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
           </Route>          
         </Routes>
       </BrowserRouter>
+      </AuthProvider>
     </QueryClientProvider>
   </ChakraProvider>
   </StrictMode>,

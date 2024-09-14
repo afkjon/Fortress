@@ -24,6 +24,7 @@ import {
 } from '@chakra-ui/icons';
 
 import { Link } from 'react-router-dom';
+import { useAuth } from '../AuthContext';
 
 interface NavItem {
   label: string
@@ -53,7 +54,10 @@ const NAV_ITEMS: Array<NavItem> = [
 ]
 
 const Navbar: React.FC = () => {
+  const { user, logout } = useAuth()
   const { isOpen, onToggle } = useDisclosure()
+
+  console.log(user)
 
   return (
     <Box>
@@ -101,23 +105,45 @@ const Navbar: React.FC = () => {
           justify={'flex-end'}
           direction={'row'}
           spacing={6}>
-          <Button as={'a'} fontSize={'sm'} fontWeight={400} variant={'link'} href={'/login'}>
-            Sign In
-          </Button>
-
-          <Button
-            as={'a'}
-            display={{ base: 'none', md: 'inline-flex' }}
-            fontSize={'sm'}
-            fontWeight={600}
-            color={'white'}
-            bg={'pink.400'}
-            href={'/register'}
-            _hover={{
-            bg: 'pink.300',
-            }}>
-            Sign Up
-          </Button>
+          { user ? 
+            <>
+              <Button
+                as={'a'}
+                fontSize={'sm'}
+                fontWeight={400}
+                variant={'link'}
+                href={'/profile'}>
+                Profile
+              </Button>
+              <Button
+                as={'a'}
+                fontSize={'sm'}
+                fontWeight={400}
+                variant={'link'}
+                onClick={logout}>
+                Logout
+              </Button>
+            </>
+            :
+            <>
+            <Button as={'a'} fontSize={'sm'} fontWeight={400} variant={'link'} href={'/login'}>
+              Sign In
+            </Button>
+            <Button
+              as={'a'}
+              display={{ base: 'none', md: 'inline-flex' }}
+              fontSize={'sm'}
+              fontWeight={600}
+              color={'white'}
+              bg={'pink.400'}
+              href={'/register'}
+              _hover={{
+              bg: 'pink.300',
+              }}>
+              Sign Up
+            </Button>
+          </>
+        }
         </Stack>
       </Flex>
 

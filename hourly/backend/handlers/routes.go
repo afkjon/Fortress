@@ -21,6 +21,11 @@ func SetupRoutes(e *echo.Echo) {
 	e.GET("/data/tasks/date/:date", handleGetTasksByDate)
 	e.POST("/data/tasks/delete/:id", handleDeleteTask)
 
+	e.POST("/login", Login)
+	e.POST("/register", Register)
+
+	e.GET("/auth/claims", HandleClaims)
+
 	/*
 		e.GET("/", func(c echo.Context) error {
 			startStr := c.QueryParam("start")

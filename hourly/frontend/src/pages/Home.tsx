@@ -14,7 +14,9 @@ import {
   Input,
   Spinner,
   Heading,
- } from '@chakra-ui/react'
+} from '@chakra-ui/react'
+
+import api from '../helpers/api'
 
 export type Task = {
   ID: number
@@ -35,7 +37,7 @@ const handleExportCsv = async(e : React.MouseEvent<HTMLButtonElement>) => {
     } 
     return data
   } catch (error) {
-    console.log(error)
+    console.error(error)
   }
 }
 
@@ -51,15 +53,17 @@ const Home: React.FC = () => {
     queryKey:["tasks"],
     queryFn: async() => {
       try {
-        const res = await fetch(API_URI + "/data/tasks")
-        const data = await res.json()
-        if (!res.ok) {
-          throw new Error(data.error || "Something went wrong")
+        const res = await api.get(API_URI + "/data/tasks")
+        if (res.status !== 200) {
+          throw new Error("Something went wrong")
         }
-        setFilteredTasks(data)
-        return data || [];
+        if (res.data.length === 0) {
+          return []
+        }        
+        setFilteredTasks(res.data)
+        return res.data;
       } catch (error) {
-        console.log(error)
+        console.error(error)
       }
     }
   })
@@ -76,48 +80,48 @@ const Home: React.FC = () => {
 
   return (
     <Box>
-        <Heading as='h1' size='2xl' noOfLines={1} my='1rem'>All Tasks</Heading>
-        {!isLoading && tasks?.length > 0 && (
-            <Flex gap='5px'>
-                <Button onClick={handleExportCsv}>Export CSV</Button> 
-                <Button onClick={handleExportCsv}>Delete List</Button>
-                <Input value={ searchInput.searchInput} 
-                    onChange={handleSearchInput} 
-                    placeholder='Task Name' 
-                    size='md' 
-                    />
-            </Flex>
-        )}
-        <TableContainer maxWidth={'100%'}>
-            <Table variant='striped'>
-            <Thead>
-                <Tr>
-                <Th>ID</Th>
-                <Th>Project</Th>
-                <Th>Task Name</Th>
-                <Th>Hours</Th>
-                </Tr>
-            </Thead>
-            {!isLoading && filteredTasks?.length > 0 && (
-                <Tbody>
-                {tasks?.map((task : Task) => (
-                    <Tr key={task.ID}>
-                    <Td>{task.ID}</Td>
-                    <Td>{task.project}</Td>
-                    <Td>{task.name}</Td>
-                    <Td>{task.hours}</Td>
-                    </Tr> 
-                ))}
-                </Tbody>
-            )}
-            </Table>
-            </TableContainer>
-        {isLoading && (
-            <Spinner />
-        )}
-        {!isLoading && tasks?.length === 0 && (
-            <div>No tasks!</div>
-        )}
+      <Heading as='h1' size='2xl' noOfLines={1} my='1rem'>All Tasks</Heading>
+      {!isLoading && tasks?.length > 0 && (
+          <Flex gap='5px'>
+              <Button onClick={handleExportCsv}>Export CSV</Button> 
+              <Button onClick={handleExportCsv}>Delete List</Button>
+              <Input value={ searchInput.searchInput} 
+                  onChange={handleSearchInput} 
+                  placeholder='Task Name' 
+                  size='md' 
+                  />
+          </Flex>
+      )}
+      <TableContainer maxWidth={'100%'}>
+          <Table variant='striped'>
+          <Thead>
+              <Tr>
+              <Th>ID</Th>
+              <Th>Project</Th>
+              <Th>Task Name</Th>
+              <Th>Hours</Th>
+              </Tr>
+          </Thead>
+          {!isLoading && filteredTasks?.length > 0 && (
+              <Tbody>
+              {tasks?.map((task : Task) => (
+                  <Tr key={task.ID}>
+                  <Td>{task.ID}</Td>
+                  <Td>{task.project}</Td>
+                  <Td>{task.name}</Td>
+                  <Td>{task.hours}</Td>
+                  </Tr> 
+              ))}
+              </Tbody>
+          )}
+          </Table>
+          </TableContainer>
+      {isLoading && (
+          <Spinner />
+      )}
+      {!isLoading && tasks?.length === 0 && (
+          <div>No tasks!</div>
+      )}
     </Box>
   )
 }

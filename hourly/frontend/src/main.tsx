@@ -8,6 +8,8 @@ import Home from './pages/Home.tsx'
 import About from './pages/About.tsx'
 import Login from './pages/Login.tsx'
 import Register from './pages/Register.tsx'
+import UserProfile from './pages/UserProfile.tsx'
+import TaskDetails from './pages/TaskDetails.tsx'
 import { AuthProvider } from './AuthContext'
 import './index.css'
 
@@ -26,16 +28,20 @@ createRoot(document.getElementById('root')!).render(
   <ChakraProvider theme={extendTheme({themeConfig})}>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path= "/" element={<App />}>
-            <Route index element={<Home />} />
-            <Route path="about" element={<About />} />
-            <Route path="login" element={<Login />} />
-            <Route path="register" element={<Register />} />
-          </Route>          
-        </Routes>
-      </BrowserRouter>
+        <BrowserRouter>
+          <Routes>
+            <Route path= "/" element={<App />}>
+              <Route index element={<Home />} />
+              <Route path="about" element={<About />} />
+              <Route path="login" element={<Login />} />
+              <Route path="register" element={<Register />} />
+              <Route path="profile" element={<UserProfile />} />
+              <Route path="tasks">
+                <Route path=":taskId" element={<TaskDetails />} />
+              </Route>
+            </Route>          
+          </Routes>
+        </BrowserRouter>
       </AuthProvider>
     </QueryClientProvider>
   </ChakraProvider>

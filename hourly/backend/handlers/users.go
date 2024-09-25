@@ -83,7 +83,7 @@ func Register(c echo.Context) error {
 	curUser := models.User{}
 	dbErr := db.DB.Where("email = ?", user.Email).First(&curUser)
 	if dbErr != nil {
-		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Internal Server Error"})
+		return c.JSON(http.StatusConflict, echo.Map{"error": "Another registered user already exists with specified email."})
 	}
 
 	token, err := generateJWT(curUser)
@@ -101,6 +101,19 @@ func Register(c echo.Context) error {
 	})
 
 	return c.JSON(http.StatusCreated, curUser)
+}
+
+func Logout(c echo.Context) error {
+	c.SetCookie(&http.Cookie{
+		Name:     "token",
+		Value:    "",
+		Expires:  time.Now().Add(-1 * time.Hour),
+		HttpOnly: true,
+	})
+
+	return c.JSON(http.StatusOK, map[string]string{
+		"message": "Logged out",
+	})
 }
 
 func generateJWT(user models.User) (string, error) {

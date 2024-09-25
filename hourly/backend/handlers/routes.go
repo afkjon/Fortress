@@ -23,4 +23,5 @@ func SetupRoutes(e *echo.Echo) {
 
 	e.POST("/login", Login)
 	e.POST("/register", Register)
+	e.POST("/logout", Logout)
 }

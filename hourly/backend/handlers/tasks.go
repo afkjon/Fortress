@@ -14,11 +14,41 @@ import (
 	"gorm.io/datatypes"
 )
 
+type TaskData struct {
+	ID         uint      `json:"id"`
+	Name       string    `json:"name"`
+	Project    string    `json:"project"`
+	Ticket     string    `json:"ticket"`
+	Hours      uint      `json:"hours"`
+	TargetDate string    `json:"target_date"`
+	CreatedAt  time.Time `json:"created_at"`
+	UpdatedAt  time.Time `json:"updated_at"`
+}
+
 /* API Endpoints */
 func handleGetAllTasks(c echo.Context) error {
 	var tasks []models.Task
 	db.DB.Find(&tasks, "deleted_at is null")
-	return c.JSON(http.StatusOK, tasks)
+
+	// Format date in response
+	var responseData []TaskData
+
+	for _, t := range tasks {
+		var d = TaskData{
+			ID:         t.ID,
+			Name:       t.Name,
+			Project:    t.Project,
+			Ticket:     t.Ticket,
+			Hours:      t.Hours,
+			TargetDate: t.GetDateString(),
+			CreatedAt:  t.CreatedAt,
+			UpdatedAt:  t.UpdatedAt,
+		}
+		responseData = append(responseData, d)
+		responseData[len(responseData)-1].TargetDate = t.GetDateString()
+	}
+
+	return c.JSON(http.StatusOK, responseData)
 }
 
 func handlePostTasks(c echo.Context) error {
@@ -40,6 +70,7 @@ func handleGetTaskById(c echo.Context) error {
 
 	task := &models.Task{}
 	db.DB.First(&task, id)
+
 	if task != nil {
 		return c.JSON(http.StatusOK, task)
 	}

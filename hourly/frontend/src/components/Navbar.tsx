@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
     Box,
     Flex,
@@ -56,6 +56,9 @@ const NAV_ITEMS: Array<NavItem> = [
 const Navbar: React.FC = () => {
   const { user, logout } = useAuth()
   const { isOpen, onToggle } = useDisclosure()
+
+  useEffect(() => {
+  }, [user]);
 
   return (
     <Box>

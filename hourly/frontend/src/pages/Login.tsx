@@ -19,45 +19,42 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-        await login(email, password);
-        if (user) {
-            navigate('/');
-        }
+      await login(email, password)
     } catch (error) {
-        setError('Invalid username or password');
-        console.error('Login failed', error);
+      setError('Invalid username or password');
+      console.error('Login failed', error);
     }
   };
 
-  // Redirect to home if user has successfully logged in 
-  // Or is already logged in
   useEffect(() => {
     if (user) {
       navigate('/');
     }
-  })
+  }, [user, navigate]);
 
   return (
     <Container>
       <h1>Login</h1>
       { error && <p color={'red'}>{error}</p> }
       <form onSubmit={handleSubmit}>
-        <FormControl>
-            <FormLabel>Email</FormLabel>
-            <Input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            />
-            <FormLabel>Password</FormLabel>
-            <Input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            />
-            <Button type="submit">Login</Button>
+        <FormControl marginY="10px">
+          <FormLabel>Email</FormLabel>
+          <Input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          />
+        </FormControl>
+        <FormControl marginY="10px">
+          <FormLabel>Password</FormLabel>
+          <Input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          />
+          <Button type="submit" marginY="10px">Login</Button>
         </FormControl>
       </form>
     </Container>

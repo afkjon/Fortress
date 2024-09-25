@@ -1,6 +1,7 @@
 // src/AuthContext.js
 import { createContext, useState, useContext, type ReactNode, useEffect } from 'react';
 import api from './helpers/api'; // Axios instance
+import axios, {AxiosError} from 'axios';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -40,24 +41,32 @@ export const AuthProvider =  (props : AuthProviderProps ) => {
       // todo: fix this
       if (res.status === 200) {
         const u : User = res.data
-        setUser(u);
+        setUser(u)
       }
-    } catch (error) {
-      setUser(null);
-      console.error("Error fetching user: ", error);
+    } catch (err: unknown) {
+      if (!axios.isAxiosError(err)) {
+        throw err
+      }
+
+      const error = err as AxiosError
+      if (error.response?.status === 401) {
+        setUser(null)
+      }
     }
   }    
 
   const login = async (email: string, password: string) => {
     try {
-      const res = await api.post('/login', { email, password }, {
+      await api.post('/login', { email, password }, {
           headers: { 'Content-Type': 'application/json' },
           withCredentials: true
         }
-      )
-      setUser(res.data.user);
-    } catch (error) {
-      console.error("Login failed", error);
+      ).then((r) => {
+        const u : User = r.data
+        setUser(u)
+      })
+    } catch (err) {
+      console.error("Login failed", err)
       throw new AuthenticationError({ data: { message: 'Invalid username or password' } });
     }
   };
@@ -70,19 +79,19 @@ export const AuthProvider =  (props : AuthProviderProps ) => {
       if (res.status === 200) {
         setUser({ ID: res.data.user.id, email: res.data.user.email });
       }
-    } catch (error) {
-      console.error("Registration failed", error);
-      throw error;
+    } catch (err: unknown) {
+      console.error("Registration failed", err)
+      throw err
     }
   };
 
   const logout = async () => {
-    await api.post('/logout');
-    setUser(null);
+    await api.post('/logout')
+    setUser(null)
   };
 
   useEffect(() => {
-    checkUser();
+    checkUser()
   }, [])
 
   return (

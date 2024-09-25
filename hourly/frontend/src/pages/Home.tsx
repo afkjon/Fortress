@@ -18,11 +18,14 @@ import {
 
 import api from '../helpers/api'
 
+import { Link } from 'react-router-dom'
+
 export type Task = {
-  ID: number
+  id: number
   name: string
   project: string
   hours: number
+  target_date: string
 }
 
 const API_URI : string = "http://localhost:8080"
@@ -95,21 +98,23 @@ const Home: React.FC = () => {
           <Table variant='striped'>
           <Thead>
               <Tr>
-              <Th>ID</Th>
               <Th>Project</Th>
               <Th>Task Name</Th>
               <Th>Hours</Th>
+              <Th>Date</Th>
               </Tr>
           </Thead>
           {!isLoading && filteredTasks?.length > 0 && (
               <Tbody>
               {tasks?.map((task : Task) => (
-                  <Tr key={task.ID}>
-                  <Td>{task.ID}</Td>
-                  <Td>{task.project}</Td>
-                  <Td>{task.name}</Td>
-                  <Td>{task.hours}</Td>
-                  </Tr> 
+                  <Tr key={task.id}>
+                    <Td>{task.project}</Td>
+                    <Td>
+                        <Link to={`tasks/` + task.id}>{task.name}</Link>
+                    </Td>
+                    <Td>{task.hours}</Td>
+                    <Td>{task.target_date}</Td>
+                    </Tr> 
               ))}
               </Tbody>
           )}

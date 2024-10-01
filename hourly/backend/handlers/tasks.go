@@ -26,7 +26,7 @@ type TaskData struct {
 }
 
 /* API Endpoints */
-func handleGetAllTasks(c echo.Context) error {
+func getAllTasks(c echo.Context) error {
 	var tasks []models.Task
 	db.DB.Find(&tasks, "deleted_at is null")
 
@@ -51,7 +51,7 @@ func handleGetAllTasks(c echo.Context) error {
 	return c.JSON(http.StatusOK, responseData)
 }
 
-func handlePostTasks(c echo.Context) error {
+func createTask(c echo.Context) error {
 	var newTask models.Task
 
 	if err := c.Bind(&newTask); err != nil {
@@ -65,7 +65,7 @@ func handlePostTasks(c echo.Context) error {
 	return c.JSON(http.StatusCreated, newTask)
 }
 
-func handleGetTaskById(c echo.Context) error {
+func getTaskById(c echo.Context) error {
 	id := c.Param("id")
 
 	task := &models.Task{}
@@ -78,7 +78,7 @@ func handleGetTaskById(c echo.Context) error {
 	return c.JSON(http.StatusNotFound, "message: Task not found.")
 }
 
-func handleDeleteTask(c echo.Context) error {
+func deleteTask(c echo.Context) error {
 	id := c.Param("id")
 
 	task := &models.Task{}
@@ -91,7 +91,7 @@ func handleDeleteTask(c echo.Context) error {
 	return c.JSON(http.StatusNotFound, "message: Task not found.")
 }
 
-func handleGetTasksByDate(c echo.Context) error {
+func getTasksByDate(c echo.Context) error {
 	date := c.Param("date")
 
 	var tasks []models.Task
@@ -100,7 +100,7 @@ func handleGetTasksByDate(c echo.Context) error {
 	return c.JSON(http.StatusOK, tasks)
 }
 
-func handleExportCsv(c echo.Context) error {
+func exportCsv(c echo.Context) error {
 	c.Response().Header().Set("Content-Type", "text/csv")
 	c.Response().Header().Set("Content-Disposition", "attachment; filename=output.csv")
 

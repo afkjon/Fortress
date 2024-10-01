@@ -14,12 +14,12 @@ type TaskList struct {
 
 func SetupRoutes(e *echo.Echo) {
 	/* API */
-	e.GET("/data/tasks", handleGetAllTasks)
-	e.POST("/data/tasks", handlePostTasks)
-	e.GET("/data/tasks/:id", handleGetTaskById)
-	e.GET("/data/tasks/csv", handleExportCsv)
-	e.GET("/data/tasks/date/:date", handleGetTasksByDate)
-	e.POST("/data/tasks/delete/:id", handleDeleteTask)
+	e.GET("/data/tasks", getAllTasks)
+	e.POST("/data/tasks", createTask)
+	e.GET("/data/tasks/:id", getTaskById)
+	e.GET("/data/tasks/csv", exportCsv)
+	e.GET("/data/tasks/date/:date", getTasksByDate)
+	e.POST("/data/tasks/delete/:id", deleteTask)
 
 	e.POST("/login", Login)
 	e.POST("/register", Register)
